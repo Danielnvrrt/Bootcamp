@@ -6,9 +6,9 @@ const Button = (props) => (
   <button onClick={props.handleClick}>{props.text}</button>
 )
 
-const Comment = (props) => (
+const StatisticLine = (props) => (
   <div>
-    {props.text} {props.total}
+    {props.text} {props.value}
   </div>
 )
 
@@ -20,19 +20,19 @@ const Statistics = ({ good, neutral, bad }) => {
   const positivePercentage = (good * 100) / total
   return total != 0 ? (
     <>
-      <Comment text={'good'} total={good} />
-      <Comment text={'neutral'} total={neutral} />
-      <Comment text={'bad'} total={bad} />
-      <Comment text={'total'} total={total} />
-      <Comment text={'average'} total={average ? average : 0} />
-      <Comment
+      <StatisticLine text={'good'} value={good} />
+      <StatisticLine text={'neutral'} value={neutral} />
+      <StatisticLine text={'bad'} value={bad} />
+      <StatisticLine text={'total'} value={total} />
+      <StatisticLine text={'average'} value={average ? average : 0} />
+      <StatisticLine
         text={'positive'}
-        total={`${positivePercentage ? positivePercentage : 0}%`}
+        value={`${positivePercentage ? positivePercentage : 0}%`}
       />
     </>
   ) : (
     <>
-      <Comment text={'No feedback given'} />
+      No feedback given
     </>
   )
 }
