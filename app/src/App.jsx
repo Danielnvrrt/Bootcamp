@@ -1,47 +1,29 @@
-import { useState } from "react"
-
-const Hello = ({name, age}) => {
-  const bornYear = () => new Date().getFullYear() - age
-
-  return (
-    <div>
-      <p>
-        Hello {name}, you are {age} years old
-      </p>
-      <p>
-        So you were probably born in {bornYear()}
-      </p>
-    </div>
-  )
-}
-
-const Display = ({ counter }) => <div>{counter}</div>
-
-const Button = ({ onSmash, text }) => <button onClick={onSmash}>{text}</button>
+import Course from './components/Course'
 
 const App = () => {
-  const  [counter, setCounter]= useState(0)
+  const course = {
+    id: 1,
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      }
+    ]
+  }
 
-  const increaseByOne = () => setCounter(counter + 1)
-  const decreaseByOne = () => setCounter(counter - 1)
-  const setToZero = () => setCounter(0)
-
-
-  return (
-    <div>
-      <Display counter={counter} />
-      <Button onSmash={increaseByOne}
-        text='plus'
-      />
-      <Button onSmash={setToZero}
-        text='zero'
-      />
-      <Button onSmash={decreaseByOne}
-        text='minus'
-      />
-    </div>
-    
-  )
+  return <Course course={course} />
 }
 
 export default App
