@@ -1,46 +1,38 @@
-import { useState } from "react"
-
-const Hello = ({name, age}) => {
-  const bornYear = () => new Date().getFullYear() - age
-
-  return (
-    <div>
-      <p>
-        Hello {name}, you are {age} years old
-      </p>
-      <p>
-        So you were probably born in {bornYear()}
-      </p>
-    </div>
-  )
-}
-
-const Display = ({ counter }) => <div>{counter}</div>
-
-const Button = ({ onSmash, text }) => <button onClick={onSmash}>{text}</button>
+import { useState } from 'react'
 
 const App = () => {
-  const  [counter, setCounter]= useState(0)
+  const [persons, setPersons] = useState([{ name: 'Arto Hellas' }])
+  const [newName, setNewName] = useState('')
 
-  const increaseByOne = () => setCounter(counter + 1)
-  const decreaseByOne = () => setCounter(counter - 1)
-  const setToZero = () => setCounter(0)
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    setPersons(persons.concat({ name: newName }))
+    setNewName('')
+  }
 
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
 
   return (
     <div>
-      <Display counter={counter} />
-      <Button onSmash={increaseByOne}
-        text='plus'
-      />
-      <Button onSmash={setToZero}
-        text='zero'
-      />
-      <Button onSmash={decreaseByOne}
-        text='minus'
-      />
+      <h2>Phonebook</h2>
+      <form>
+        <div>
+          name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>debug: {newName}</div>
+        <div>
+          <button type="submit" onClick={handleSubmit}>
+            add
+          </button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {persons.map((person) => (
+        <div key={person.name}>{person.name}</div>
+      ))}
     </div>
-    
   )
 }
 
