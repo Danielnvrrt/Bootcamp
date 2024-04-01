@@ -6,7 +6,10 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    setPersons(persons.concat({ name: newName }))
+
+    persons.find((p) => p.name === newName)
+      ? alert(`${newName} already exists`)
+      : setPersons(persons.concat({ name: newName }))
     setNewName('')
   }
 
@@ -21,7 +24,6 @@ const App = () => {
         <div>
           name: <input value={newName} onChange={handleNameChange} />
         </div>
-        <div>debug: {newName}</div>
         <div>
           <button type="submit" onClick={handleSubmit}>
             add
