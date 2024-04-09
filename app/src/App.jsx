@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
+import Agenda from './components/Agenda';
 
 
 const App = () => {
@@ -81,11 +82,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h2>Numbers</h2>
-      {personsShown.map((person) => (
-        <div key={person.name}>
-          {person.name} {person.number}
-        </div>
-      ))}
+      <Agenda personsShown={personsShown} />
     </div>
   )
 }
