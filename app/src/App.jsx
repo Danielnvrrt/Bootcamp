@@ -20,6 +20,7 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+
     const existName = persons.find((p) => p.name === newName)
     const existNumber = persons.find((p) => p.number === newNumber)
 
@@ -29,8 +30,12 @@ const App = () => {
       } else if (newNumber === '') {
         alert(`Number can't be empty`)
       } else {
-        setPersons(persons.concat({ name: newName, number: newNumber }))
-        setPersonsShown(persons.concat({ name: newName, number: newNumber }))
+        agendaService
+          .saveNewPerson({name: newName, number: newNumber})
+          .then((newPerson) => {
+            setPersons(persons.concat(newPerson))
+            setPersonsShown(persons.concat(newPerson))
+          })
       }
     } else if (existName) {
       alert(`${newName} name already exists`)

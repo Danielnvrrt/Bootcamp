@@ -1,26 +1,38 @@
 import axios from 'axios'
-const baseURL = 'http://localhost:3001'
+const baseURL = 'http://localhost:3001/persons'
 
 const getAllPersons = () => {
-    try {
-        const request = axios.get(`${baseURL}/persons`)
-        return request.then((response) => response.data)
-    } catch (error) {
-        console.error('Error fetching persons:', error)
-        throw error
-    }
+  try {
+    const request = axios.get(baseURL)
+    return request.then((response) => response.data)
+  } catch (error) {
+    console.error('Error fetching persons:', error)
+    throw error
+  }
+}
+
+const saveNewPerson = (newPerson) => {
+  try {
+    const request = axios.post(baseURL, newPerson)
+    return request.then((response) => response.data)
+  } catch (error) {
+    console.error('Error saving new person:', error)
+    throw error
+  }
 }
 
 const deletePerson = (id) => {
-    try {
-        const request = axios.delete(`${baseURL}/persons/${id}`)
-        return request.then((response) => response.data)
-    } catch (error) {
-        console.error('Error deleting person:', error)
-        throw error
-    }
+  try {
+    const request = axios.delete(`${baseURL}/${id}`)
+    return request.then((response) => response.data)
+  } catch (error) {
+    console.error('Error deleting person:', error)
+    throw error
+  }
 }
 
 export default {
-  getAllPersons, deletePerson
+  getAllPersons,
+  saveNewPerson,
+  deletePerson,
 }
