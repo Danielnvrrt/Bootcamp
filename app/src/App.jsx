@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Agenda from './components/Agenda'
-import axios from 'axios'
+import agendaService from './services/agenda.service'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,9 +12,9 @@ const App = () => {
   const [personsShown, setPersonsShown] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data)
-      setPersonsShown(response.data)
+    agendaService.getAllPersons().then((data) => {
+      setPersons(data)
+      setPersonsShown(data)
     })
   }, [])
 
@@ -50,6 +50,21 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this person?')) {
+      agendaService
+        .deletePerson(id)
+        .then(() => {
+          const updatedPersons = persons.filter((person) => person.id !== id)
+          setPersons(updatedPersons)
+          setPersonsShown(updatedPersons)
+        })
+        .catch((error) => {
+          console.log('Error deleting person:', error)
+        })
+    }
+  }
+
   const handleValueFilteredChange = (event) => {
     if (event.target.value === '') {
       setPersonsShown([...persons])
@@ -83,7 +98,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h2>Numbers</h2>
-      <Agenda personsShown={personsShown} />
+      <Agenda personsShown={personsShown} handleDelete={handleDelete} />
     </div>
   )
 }

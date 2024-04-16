@@ -1,8 +1,9 @@
-const Agenda = ({ personsShown }) => (
+const Agenda = ({ personsShown, handleDelete }) => (
   <div>
     {personsShown.map((person) => (
-      <div key={person.name}>
+      <div key={person.id}>
         {person.name} {person.number}
+        <button onClick={() => handleDelete(person.id)}>delete</button>
       </div>
     ))}
   </div>
