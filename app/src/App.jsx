@@ -31,16 +31,46 @@ const App = () => {
         alert(`Number can't be empty`)
       } else {
         agendaService
-          .saveNewPerson({name: newName, number: newNumber})
+          .saveNewPerson({ name: newName, number: newNumber })
           .then((newPerson) => {
             setPersons(persons.concat(newPerson))
             setPersonsShown(persons.concat(newPerson))
           })
       }
     } else if (existName) {
-      alert(`${newName} name already exists`)
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook, replace the old number with ${newNumber}?`
+        )
+      ) {
+        const updatedPerson = { ...existName, number: newNumber }
+        agendaService
+          .updatePerson(existName.id, updatedPerson)
+          .then((updatedPerson) => {
+            const updatedPersons = persons.map((person) =>
+              person.id !== updatedPerson.id ? person : updatedPerson
+            )
+            setPersons(updatedPersons)
+            setPersonsShown(updatedPersons)
+          })
+      }
     } else {
-      alert(`${newNumber} number already exists`)
+      if (
+        window.confirm(
+          `${newNumber} number is already added to the phonebook, replace the old name with ${newName}?`
+        )
+      ) {
+        const updatedPerson = { ...existNumber, name: newName }
+        agendaService
+          .updatePerson(existNumber.id, updatedPerson)
+          .then((updatedPerson) => {
+            const updatedPersons = persons.map((person) =>
+              person.id !== updatedPerson.id ? person : updatedPerson
+            )
+            setPersons(updatedPersons)
+            setPersonsShown(updatedPersons)
+          })
+      }
     }
     setNewName('')
     setNewNumber('')

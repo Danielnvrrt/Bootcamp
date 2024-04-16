@@ -21,6 +21,16 @@ const saveNewPerson = (newPerson) => {
   }
 }
 
+const updatePerson = (id, updatedPerson) => {
+  try {
+    const request = axios.put(`${baseURL}/${id}`, updatedPerson)
+    return request.then((response) => response.data)
+  } catch (error) {
+    console.error('Error updating person:', error)
+    throw error
+  }
+}
+
 const deletePerson = (id) => {
   try {
     const request = axios.delete(`${baseURL}/${id}`)
@@ -34,5 +44,6 @@ const deletePerson = (id) => {
 export default {
   getAllPersons,
   saveNewPerson,
+  updatePerson,
   deletePerson,
 }
