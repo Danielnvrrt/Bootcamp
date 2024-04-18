@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Agenda from './components/Agenda'
 import agendaService from './services/agenda.service'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [valueFiltered, setValueFiltered] = useState('')
   const [personsShown, setPersonsShown] = useState([])
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     agendaService.getAllPersons().then((data) => {
@@ -33,6 +35,12 @@ const App = () => {
         agendaService
           .saveNewPerson({ name: newName, number: newNumber })
           .then((newPerson) => {
+            setSuccessMessage(
+              `${newName} was added successfully`              
+            )
+            setTimeout(() => {
+              setSuccessMessage(null)            
+            }, 5000)
             setPersons(persons.concat(newPerson))
             setPersonsShown(persons.concat(newPerson))
           })
@@ -47,6 +55,12 @@ const App = () => {
         agendaService
           .updatePerson(existName.id, updatedPerson)
           .then((updatedPerson) => {
+            setSuccessMessage(
+              `${newNumber} number was updated successfully`              
+            )
+            setTimeout(() => {
+              setSuccessMessage(null)            
+            }, 5000)
             const updatedPersons = persons.map((person) =>
               person.id !== updatedPerson.id ? person : updatedPerson
             )
@@ -64,6 +78,12 @@ const App = () => {
         agendaService
           .updatePerson(existNumber.id, updatedPerson)
           .then((updatedPerson) => {
+            setSuccessMessage(
+              `${newName} name was updated successfully`              
+            )
+            setTimeout(() => {
+              setSuccessMessage(null)            
+            }, 5000)
             const updatedPersons = persons.map((person) =>
               person.id !== updatedPerson.id ? person : updatedPerson
             )
@@ -120,6 +140,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter
         filterValue={valueFiltered}
         handleValueFiltered={handleValueFilteredChange}
