@@ -11,7 +11,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [valueFiltered, setValueFiltered] = useState('')
   const [personsShown, setPersonsShown] = useState([])
-  const [successMessage, setSuccessMessage] = useState('')
+  const [notification, setNotificationMessage] = useState({
+    message: null,
+    color: null,
+  })
 
   useEffect(() => {
     agendaService.getAllPersons().then((data) => {
@@ -19,6 +22,17 @@ const App = () => {
       setPersonsShown(data)
     })
   }, [])
+
+  useEffect(() => {
+    if (notification) {
+      agendaService
+        .getAllPersons()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+          setPersonsShown(initialPersons)
+        })
+    }
+  }, [notification])
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -35,11 +49,12 @@ const App = () => {
         agendaService
           .saveNewPerson({ name: newName, number: newNumber })
           .then((newPerson) => {
-            setSuccessMessage(
-              `${newName} was added successfully`              
-            )
+            setNotificationMessage({
+              message: `${newName} was added successfully`,
+              color: 'green',
+            })
             setTimeout(() => {
-              setSuccessMessage(null)            
+              setNotificationMessage({ message: null, color: null })
             }, 5000)
             setPersons(persons.concat(newPerson))
             setPersonsShown(persons.concat(newPerson))
@@ -55,17 +70,27 @@ const App = () => {
         agendaService
           .updatePerson(existName.id, updatedPerson)
           .then((updatedPerson) => {
-            setSuccessMessage(
-              `${newNumber} number was updated successfully`              
-            )
+            setNotificationMessage({
+              message: `${newNumber} number was updated successfully`,
+              color: 'green',
+            })
             setTimeout(() => {
-              setSuccessMessage(null)            
+              setNotificationMessage({ message: null, color: null })
             }, 5000)
             const updatedPersons = persons.map((person) =>
               person.id !== updatedPerson.id ? person : updatedPerson
             )
             setPersons(updatedPersons)
             setPersonsShown(updatedPersons)
+          })
+          .catch(() => {
+            setNotificationMessage({
+              message: `Information of ${newName} has already been removed from the server`,
+              color: 'red',
+            })
+            setTimeout(() => {
+              setNotificationMessage({ message: null, color: null })
+            }, 5000)
           })
       }
     } else {
@@ -78,17 +103,27 @@ const App = () => {
         agendaService
           .updatePerson(existNumber.id, updatedPerson)
           .then((updatedPerson) => {
-            setSuccessMessage(
-              `${newName} name was updated successfully`              
-            )
+            setNotificationMessage({
+              message: `${newName} name was updated successfully`,
+              color: 'green',
+            })
             setTimeout(() => {
-              setSuccessMessage(null)            
+              setNotificationMessage({ message: null, color: null })
             }, 5000)
             const updatedPersons = persons.map((person) =>
               person.id !== updatedPerson.id ? person : updatedPerson
             )
             setPersons(updatedPersons)
             setPersonsShown(updatedPersons)
+          })
+          .catch(() => {
+            setNotificationMessage({
+              message: `Information of ${newName} has already been removed from the server`,
+              color: 'red',
+            })
+            setTimeout(() => {
+              setNotificationMessage({ message: null, color: null })
+            }, 5000)
           })
       }
     }
@@ -115,7 +150,13 @@ const App = () => {
           setPersonsShown(updatedPersons)
         })
         .catch((error) => {
-          console.log('Error deleting person:', error)
+          setNotificationMessage({
+            message: `${id} has already been removed from the server`,
+            color: 'red',
+          })
+          setTimeout(() => {
+            setNotificationMessage({ message: null, color: null })
+          }, 5000)
         })
     }
   }
@@ -140,7 +181,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage} />
+      <Notification message={notification.message} color={notification.color} />
       <Filter
         filterValue={valueFiltered}
         handleValueFiltered={handleValueFilteredChange}
