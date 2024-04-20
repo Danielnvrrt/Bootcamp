@@ -1,100 +1,46 @@
 import { useState, useEffect } from 'react'
-import Note from './components/Note'
-import noteService from './services/notes'
-import Notification from './components/Notification'
-
-const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
-  return (
-    <div style={footerStyle}>
-      <br />
-      <em>Note app, Department of Computer Science, University of Helsinki 2024</em>
-    </div>
-  )
-}
+import countryService from './services/country.service'
+import SearchBar from './components/SearchBar'
+import CountryList from './components/CountryList'
 
 const App = () => {
-  const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('a new note...')
-  const [showAll, setShowAll] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [countries, setCountries] = useState(null)
+  const [countrySearched, setCountrySearched] = useState('')
+  const [countriesShown, setCountriesShown] = useState(null)
 
-  const hook = () => {
-    noteService.getAll().then((initialNotes) => {
-      setNotes(initialNotes)
-    })
-  }
+  useEffect(() => {
+    countryService
+      .getAllCountries()
+      .then((countries) => setCountries(countries))
+      .catch((error) => {
+        console.log('Error retrieving countries' + error)
+      })
+  }, [])
 
-  useEffect(hook, [])
+  const handleCountrySearchedChange = (event) => {
+    const introducedCountry = event.target.value
 
-  const addNote = (event) => {
-    event.preventDefault()
-    const noteObject = {
-      content: newNote,
-      important: Math.random() < 0.5,
-      id: notes.length + 1,
+    if (countries != null) {
+      const filteredCountries = countries.filter((country) =>
+        country.name.common
+          .toLowerCase()
+          .includes(introducedCountry.toLowerCase()) ||
+        country.name.official
+          .toLowerCase()
+          .includes(introducedCountry.toLowerCase())
+      )
+      setCountriesShown(filteredCountries)
     }
-
-    noteService.create(noteObject).then((createdNote) => {
-      setNotes(notes.concat(createdNote))
-      setNewNote('')
-    })
+    setCountrySearched(introducedCountry)
   }
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
-  }
-
-  const toggleImportanceOf = (id) => {
-    const note = notes.find((n) => n.id === id)
-    const changedNote = { ...note, important: !note.important }
-
-    noteService
-      .update(id, changedNote)
-      .then((updatedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : updatedNote)))
-      })
-      .catch(error => {
-        setErrorMessage(
-          `Note '${note.content}' was already removed from the server`
-        ) 
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-        setNotes(notes.filter(n => n.id !== id))
-      })
-  }
-
-  const notesToShow = showAll ? notes : notes.filter((note) => note.important)
 
   return (
     <div>
-      <h1>Notes</h1>
-      <Notification message={errorMessage} />
-      <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
-        </button>
-      </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
-      </ul>
-
-      <form onSubmit={addNote}>
-        <input value={newNote} onChange={handleNoteChange} />
-        <button type="submit">save</button>
-      </form>
-      <Footer />
+      <SearchBar
+        country={countrySearched}
+        onChange={handleCountrySearchedChange}
+      />
+      <CountryList countries={countriesShown} />
     </div>
   )
 }
