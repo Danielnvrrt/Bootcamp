@@ -1,4 +1,4 @@
-const CountryList = ({ countries }) => {
+const CountryList = ({ countries, handleShowCountry }) => {
   if (countries?.length === 1) {
     const country = countries.pop()
     return (
@@ -17,15 +17,25 @@ const CountryList = ({ countries }) => {
           </ul>
         </section>
         <section id="flag">
-          <img src={country.flags.svg} alt={country.flags.alt}></img>
+          <img
+            src={country.flags.svg}
+            alt={country.flags.alt}
+            width={300}
+            height={300}
+          ></img>
         </section>
       </div>
-    )    
+    )
   } else if (countries?.length > 1 && countries?.length <= 10) {
     return (
       <div>
         {countries.map((country) => (
-          <div key={country.name.common}>{country.name.common}</div>
+          <div key={country.name.common}>
+            {country.name.common}
+            <button onClick={() => handleShowCountry(country.name.common)}>
+              Show
+            </button>
+          </div>
         ))}
       </div>
     )

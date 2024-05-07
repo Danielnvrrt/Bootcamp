@@ -21,17 +21,25 @@ const App = () => {
     const introducedCountry = event.target.value
 
     if (countries != null) {
-      const filteredCountries = countries.filter((country) =>
-        country.name.common
-          .toLowerCase()
-          .includes(introducedCountry.toLowerCase()) ||
-        country.name.official
-          .toLowerCase()
-          .includes(introducedCountry.toLowerCase())
+      const filteredCountries = countries.filter(
+        (country) =>
+          country.name.common
+            .toLowerCase()
+            .includes(introducedCountry.toLowerCase()) ||
+          country.name.official
+            .toLowerCase()
+            .includes(introducedCountry.toLowerCase())
       )
       setCountriesShown(filteredCountries)
     }
     setCountrySearched(introducedCountry)
+  }
+
+  const handleShowButton = (id) => {
+    const showCountry = countries.filter(
+      (country) => country.name.common === id
+    )
+    setCountriesShown(showCountry)
   }
 
   return (
@@ -40,7 +48,10 @@ const App = () => {
         country={countrySearched}
         onChange={handleCountrySearchedChange}
       />
-      <CountryList countries={countriesShown} />
+      <CountryList
+        countries={countriesShown}
+        handleShowCountry={handleShowButton}
+      />
     </div>
   )
 }
