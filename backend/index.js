@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 app.use(express.json())
+app.use(cors())
 
 let notes = [
   {
@@ -18,6 +20,11 @@ let notes = [
     content: 'GET and POST are the most important methods of HTTP protocol',
     important: true,
   },
+  {
+    id: 4,
+    content: 'Hola',
+    important: true
+  }
 ]
 
 const generateId = () => {
